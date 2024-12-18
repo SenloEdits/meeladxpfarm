@@ -1,0 +1,35 @@
+-- Looping script to execute commands every 0.5 seconds
+while true do
+    -- Spawning units
+    local spawnArgs = {
+        { "17d094577edc436", { ["Direction"] = Vector3.new(0.046770259737968445, -0.8202186822891235, 0.5701349973678589), ["Origin"] = Vector3.new(1915.77783203125, 168.18650817871094, -23.96778106689453) }, 0 },
+        { "17d094577edc436", { ["Direction"] = Vector3.new(-0.016368430107831955, -0.9357812404632568, 0.35220101475715637), ["Origin"] = Vector3.new(1914.6046142578125, 168.73788452148438, -21.860830307006836) }, 0 },
+        { "17d094577edc436", { ["Direction"] = Vector3.new(0.15910106897354126, -0.944346010684967, 0.28791892528533936), ["Origin"] = Vector3.new(1914.6982421875, 168.77557373046875, -21.9107723236084) }, 0 },
+        { "17d094577edc436", { ["Direction"] = Vector3.new(0.29849255084991455, -0.8532149195671082, 0.4276992082595825), ["Origin"] = Vector3.new(1914.427734375, 168.6529083251953, -21.87920570373535) }, 0 },
+    }
+
+    for _, args in ipairs(spawnArgs) do
+        game:GetService("ReplicatedStorage").endpoints.client_to_server.spawn_unit:InvokeServer(unpack(args))
+    end
+
+    -- Upgrading units
+    local upgradeArgs = {
+        "17d094577edc4362",
+    }
+
+    for _, unitId in ipairs(upgradeArgs) do
+        game:GetService("ReplicatedStorage").endpoints.client_to_server.upgrade_unit_ingame:InvokeServer(unitId)
+    end
+
+    -- Skipping wave
+    game:GetService("ReplicatedStorage").endpoints.client_to_server.vote_wave_skip:InvokeServer()
+
+    -- Setting game finished vote
+    local finishArgs = {
+        "replay"
+    }
+    game:GetService("ReplicatedStorage").endpoints.client_to_server.set_game_finished_vote:InvokeServer(unpack(finishArgs))
+
+    -- Wait for 0.5 seconds before looping again
+    task.wait(0.1)
+end
